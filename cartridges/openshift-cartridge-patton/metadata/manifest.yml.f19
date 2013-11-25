@@ -1,10 +1,8 @@
 ---
-Name: python
-Cartridge-Short-Name: PYTHON
-Display-Name: Python 2.7
-Description: ! 'Python is a general-purpose, high-level programming language whose
-  design philosophy emphasizes code readability. Popular development frameworks include:
-  Django, Bottle, Pylons, Zope and TurboGears.'
+Name: patton-framework
+Cartridge-Short-Name: PATTON
+Display-Name: Patton Framework (Python 2.7)
+Description: ! 'Patton provides support Python using supervisord, honcho, and custom virtualenv support. This differs from the default RedHat design using apache+wsgi.'
 Version: '2.7'
 Versions:
 - '2.7'
@@ -12,29 +10,35 @@ Versions:
 License: The Python License, version 2.7
 License-Url: http://docs.python.org/3/license.html
 Vendor: python.org
-Cartridge-Version: 0.0.8
-Compatible-Versions:
-- 0.0.7
-Cartridge-Vendor: redhat
+Cartridge-Version: 1.0
+Compatible-Versions: []
+Cartridge-Vendor: wisertogether
 Categories:
 - service
 - python
 - web_framework
+- community
 Website: http://www.python.org
 Help-Topics:
   Developer Center: https://www.openshift.com/developers
+  WiserTogether Patton: https://github.com/WiserTogether/patton/docs
 Cart-Data:
 - Key: OPENSHIFT_TMP_DIR
   Type: environment
   Description: Directory to store application temporary files.
 - Key: OPENSHIFT_REPO_DIR
   Type: environment
-  Description: Application root directory where application files reside. This directory
-    is reset every time you do a git-push
+  Description: Application root directory where application files reside. This directory is reset every time you do a git-push
 - Key: OPENSHIFT_PYTHON_PORT
   Type: environment
   Description: Internal port to which the web-framework binds to.
 - Key: OPENSHIFT_PYTHON_IP
+  Type: environment
+  Description: Internal IP to which the web-framework binds to.
+- Key: OPENSHIFT_PATTON_PORT
+  Type: environment
+  Description: Internal port to which the web-framework binds to.
+- Key: OPENSHIFT_PATTON_IP
   Type: environment
   Description: Internal IP to which the web-framework binds to.
 - Key: OPENSHIFT_APP_DNS
@@ -55,10 +59,11 @@ Cart-Data:
   Type: environment
   Description: Unique ID which identified the gear. This value changes between gears.
 Provides:
+- patton
 - python-2.7
 - python
 - python(version) = 2.7
-Publishes: 
+Publishes:
 Subscribes:
   set-env:
     Type: ENV:*
@@ -66,6 +71,12 @@ Subscribes:
   set-doc-url:
     Type: STRING:urlpath
     Required: false
+  set-mysql-connection-info:
+    Type: "NET_TCP:db:mysql"
+    Required : false
+  set-postgres-connection-info:
+    Type: "NET_TCP:db:postgres"
+    Required : false
 Scaling:
   Min: 1
   Max: -1
@@ -90,9 +101,10 @@ Endpoints:
       health: true
 Version-Overrides:
   '3.3':
-    Display-Name: Python 3.3
+    Display-Name: Patton Framework (Python 3.3)
     License: The Python License, version 3.3
     Provides:
+    - patton
     - python-3.3
     - python
     - python(version) = 3.3
