@@ -1,6 +1,0 @@
-#!/bin/bash -eu
-
-perl_version=$1
-curr=$2
-next=$3
-

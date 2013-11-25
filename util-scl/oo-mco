@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec oo-exec-ruby /opt/rh/ruby193/root/usr/sbin/mco "$@"
