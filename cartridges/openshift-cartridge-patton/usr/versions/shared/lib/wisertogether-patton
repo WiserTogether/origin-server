@@ -1,0 +1,46 @@
+#!/bin/bash
+
+VE_ROOT=${OPENSHIFT_PYTHON_DIR}/virtenv
+
+# Called when a build is complete in the openshift universe and we are
+# ready for the wisertogether-specific build setps.
+function complete_patton_build() {
+
+  pushd "$OPENSHIFT_REPO_DIR" > /dev/null
+    . env.sh
+    make
+  popd  > /dev/null
+
+
+}  #  End of function  complete_patton_build.
+
+
+function create_supervisor_config() {
+  pushd "$OPENSHIFT_REPO_DIR" > /dev/null
+
+    if [ -f Procfile ]; then
+      echo Creating supervisord.conf from Procfile
+     if honcho check --app-root ${OPENSHIFT_REPO_DIR} --procfile ${OPENSHIFT_REPO_DIR}Procfile 2> /dev/null; then
+       honcho export \
+       --app-root ${OPENSHIFT_REPO_DIR} \
+       --procfile ${OPENSHIFT_REPO_DIR}Procfile \
+       --log $OPENSHIFT_PYTHON_LOG_DIR \
+       --port $OPENSHIFT_PATTON_PORT \
+       supervisord ${OPENSHIFT_PYTHON_DIR}etc/supervisord.conf
+     fi
+
+  popd  > /dev/null
+
+}  #  End of function  create_supervisor_config.
+
+
+function is_running() {
+   pushd $OPENSHIFT_REPO_DIR > /dev/null
+   if [ -w ${OPENSHIFT_PYTHON_RUN_DIR}supervisor.sock ];
+   then
+    return 0
+   else
+  return 1
+   fi
+}  #  End of function  _is_running.
+
